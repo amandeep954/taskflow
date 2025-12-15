@@ -1,0 +1,15 @@
+# --- Dependencies (Dono ke liye) ---
+node_modules/
+*/node_modules/
+
+# --- Environment Variables (Secret Keys) ---
+.env
+*/.env
+
+# --- Client Build Files (React/Vite) ---
+client/dist/
+client/build/
+
+# --- Logs & System Files ---
+*.log
+.DS_Store
