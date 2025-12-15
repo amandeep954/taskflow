@@ -10,6 +10,9 @@ const User = require("./models/User");
 
 const app = express();
 
+// --- 1. RENDER PROXY SETUP (Jaruri hai) ---
+app.set("trust proxy", 1);
+
 // --- DB CONNECTION ---
 const dbUrl = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/taskflow_db";
 mongoose
@@ -17,11 +20,14 @@ mongoose
   .then(() => console.log("✅ Database Connected"))
   .catch((err) => console.log("❌ DB Error:", err));
 
-// --- MIDDLEWARE ---
-// CORS: React (Port 5173) se cookies accept karne ke liye
+// --- 2. MIDDLEWARE (CORS FIXED) ---
+// Ab ye Localhost aur Live Site dono ko accept karega
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173", // Local Testing ke liye
+      "https://taskflow-client.onrender.com", // 👈 YAHAN APNI FRONTEND LINK DALEIN
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
@@ -42,11 +48,14 @@ app.use(
     store,
     secret: process.env.SECRET || "secretcode",
     resave: false,
-    saveUninitialized: false, // Login nahi hai to cookie mat banao
+    saveUninitialized: false,
     cookie: {
       expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
+      // Render par secure true hona chahiye (HTTPS ke liye)
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", 
     },
   })
 );
@@ -55,7 +64,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Passport-Local-Mongoose ka Strategy Setup
 passport.use(
   new LocalStrategy({ usernameField: "email" }, User.authenticate())
 );
@@ -67,7 +75,7 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/tasks", require("./routes/tasks"));
 
 // --- START SERVER ---
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
