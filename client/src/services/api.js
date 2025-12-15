@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-// Ek central instance banaya
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // Backend ka address
-  withCredentials: true, // ⚠️ SABSE ZAROORI: Ye cookies ko aane-jane dega
+ 
+  baseURL: 'https://taskflow-server.onrender.com/api', 
 });
 
-export default api;
+
