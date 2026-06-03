@@ -10,7 +10,7 @@ import {
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
-import MyNavbar from "../components/MyNavbar"; 
+import MyNavbar from "../components/MyNavbar";
 import Footer from "../components/Footer";
 
 const LoginPage = () => {
@@ -39,7 +39,6 @@ const LoginPage = () => {
         flexDirection: "column",
       }}
     >
-    
       <MyNavbar />
 
       <Container className="d-flex align-items-center justify-content-center flex-grow-1">
